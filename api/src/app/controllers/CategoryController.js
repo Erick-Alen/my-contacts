@@ -1,38 +1,33 @@
-const ContactsRepo = require('../repos/ContactsRepo');
+const CategoriesRepo = require('../repos/CategoriesRepo');
 
-class ContactController {
+class CategoryController {
 
 	async index(req, res) {
-		const { orderBy } = req.query
-		const contacts = await ContactsRepo.findAll(orderBy);
-		return res.json(contacts);
 
+		const categories = await CategoriesRepo.findAll();
+		return res.json(categories);
 	}
+
 	async show(req, res) {
 
 		const { id } = req.params;
-		const contact = await ContactsRepo.findById(id)
+		const category = await CategoriesRepo.findById(id)
 
-		if (!contact) {
-			return res.status(404).json({error: "User not found"})
+		if (!category) {
+			return res.status(404).json({error: "Category not found"})
 		}
 
-		res.json(contact);
+		res.json(category);
 	}
 	async store(req, res) {
 
-		const { name, phone, email, category_id } = req.body;
+		const { name } = req.body;
 		if (!name) {
-			return res.status(400).json({error: "Name required"})
+			return res.status(400).json({error: "Category name required"})
 		}
 
-		const contactExists = await ContactsRepo.findByEmail(email);
-		if (contactExists) {
-			return res.status(400).json({error: "User email already exists"})
-		}
-
-		const contact = await ContactsRepo.create({ name, phone, email, category_id });
-		res.json(contact)
+		const category = await CategoriesRepo.create({ name });
+		res.json(category)
 
 	}
 
@@ -75,4 +70,4 @@ class ContactController {
 
 }
 
-module.exports = new ContactController();
+module.exports = new CategoryController();
