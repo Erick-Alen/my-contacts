@@ -7,7 +7,7 @@ import EditContact from "./pages/EditContact";
 export default function Routes() {
 	return (
 		<Switch>
-			<Route path="/edit/123" component={EditContact} />
+			<Route path="/edit/:id" component={EditContact} />
 			<Route path="/new" component={NewContact} />
 			<Route path="/" component={Home} exact />
 			{/* <Route path='/delete/:id' exact/> */}

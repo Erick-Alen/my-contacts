@@ -1,23 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import * as S from '../../pages/Home/styled';
+import React, { useEffect, useMemo, useState } from 'react';
+import Loader from '../../Components/Loader';
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
-import Modal from '../../Components/Modal';
-import Loader from '../../Components/Loader';
+import * as S from '../../pages/Home/styled';
+import delay from '../../utils/delay';
+import ContactService from '../../services/ContactService';
 
 export default function Home() {
 	const [contacts, setContacts] = useState([])
 	const [orderBy, setOrderBy] = useState('asc')
+	const [searchTerm, setSearchTerm] = useState('')
+	const [isLoading, setIsLoading] = useState(true)
+
+	const filteredContacts = useMemo(() => contacts.filter((contact) => (
+		contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+	)), [contacts, searchTerm])
+
+
 	useEffect(() => {
-		fetch(`http://localhost:8000/contacts?orderBy=${orderBy}`)
-		.then(async (res) => {
-			const data = await res.json()
-			setContacts(data)
-		})
-		.catch((err)=>{
-			console.log(err)
-		})
+		setIsLoading(true)
+		const loadContacts = async () => {
+			try {
+				const contactsList = await ContactService.listContacts(orderBy)
+				setContacts(contactsList)
+			} catch(err) {
+				console.log(err)
+			} finally {
+				setIsLoading(false)
+			}
+		}
+		loadContacts()
 	}, [orderBy])
 
 	const handleSortContacts = () => {
@@ -35,28 +48,31 @@ export default function Home() {
 	// 	})
 	}
 
+	const onSearchTerm = (e) => {
+		setSearchTerm(e.target.value)
+	}
 	return (
 		<>
 			{/* <Modal danger /> */}
-			{/* <Loader/> */}
+			<Loader isLoading={isLoading} />
 			<S.InputSearchContainer>
-				<input placeholder="Search contact's name" type="text" />
+				<input value={searchTerm} onChange={onSearchTerm} placeholder="Search contact's name" type="text" />
 			</S.InputSearchContainer>
 
 			<S.ContainerList>
 				<S.HeaderList>
-					<strong>{contacts.length === 0 ? 'Ops.. No contacts here!' : contacts.length} {contacts.length > 1 ? 'Contacts' : 'Contact'}</strong>
+					<strong>{filteredContacts.length === 0 ? 'Ops.. No contacts here!' : filteredContacts.length} {filteredContacts.length > 1 ? 'Contact(s)' : <></>}</strong>
 					<a href="/new">New Contact</a>
 				</S.HeaderList>
 
-				<S.OrderByName orderBy={orderBy}>
+				{filteredContacts.length > 0 && <S.OrderByName orderBy={orderBy}>
 					<button type="button" className="sort-button" onClick={handleSortContacts}>
 						<span>Nome</span>
 						<img src={arrow} alt="arrow" />
 					</button>
-				</S.OrderByName>
+				</S.OrderByName>}
 
-				{contacts.map((contact) => (
+				{filteredContacts.map((contact) => (
 					<S.Card key={contact.id}>
 						<div className="info">
 							<div className="contact-name">
