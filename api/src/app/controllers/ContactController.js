@@ -14,7 +14,7 @@ class ContactController {
 		const contact = await ContactsRepo.findById(id)
 
 		if (!contact) {
-			return res.status(404).json({error: "User not found"})
+			return res.status(404).json({error: "Contact not found"})
 		}
 
 		res.json(contact);
@@ -28,11 +28,11 @@ class ContactController {
 
 		const contactExists = await ContactsRepo.findByEmail(email);
 		if (contactExists) {
-			return res.status(400).json({error: "User email already exists"})
+			return res.status(400).json({error: "Contact email already exists"})
 		}
 
 		const contact = await ContactsRepo.create({ name, phone, email, category_id });
-		res.json(contact)
+		res.status(201).json(contact)
 
 	}
 

@@ -1,36 +1,43 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import Button from '../../Components/Button';
 import Loader from '../../Components/Loader';
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
+import sad from '../../assets/images/sad.svg';
 import * as S from '../../pages/Home/styled';
-import delay from '../../utils/delay';
-import ContactService from '../../services/ContactService';
+import ContactsService from '../../services/ContactsService';
 
 export default function Home() {
 	const [contacts, setContacts] = useState([])
 	const [orderBy, setOrderBy] = useState('asc')
 	const [searchTerm, setSearchTerm] = useState('')
 	const [isLoading, setIsLoading] = useState(true)
+	const [hasError, setHasError] = useState(false)
 
 	const filteredContacts = useMemo(() => contacts.filter((contact) => (
 		contact.name.toLowerCase().includes(searchTerm.toLowerCase())
 	)), [contacts, searchTerm])
 
+  const loadContacts = async () => {
+    setIsLoading(true)
+    try {
+      const contactsList = await ContactsService.listContacts(orderBy)
+      setContacts(contactsList)
+      setHasError(false)
+    } catch (err) {
+      setHasError(true)
+      console.log(err.name)
+      console.log(err.message)
+      console.log(err.response)
+
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
 	useEffect(() => {
-		setIsLoading(true)
-		const loadContacts = async () => {
-			try {
-				const contactsList = await ContactService.listContacts(orderBy)
-				setContacts(contactsList)
-			} catch(err) {
-				console.log(err)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-		loadContacts()
+    loadContacts();
 	}, [orderBy])
 
 	const handleSortContacts = () => {
@@ -50,7 +57,13 @@ export default function Home() {
 
 	const onSearchTerm = (e) => {
 		setSearchTerm(e.target.value)
-	}
+  }
+
+  const handleTryAgain = () => {
+    console.log('handleTryAgain')
+    loadContacts();
+  }
+
 	return (
 		<>
 			{/* <Modal danger /> */}
@@ -60,38 +73,58 @@ export default function Home() {
 			</S.InputSearchContainer>
 
 			<S.ContainerList>
-				<S.HeaderList>
-					<strong>{filteredContacts.length === 0 ? 'Ops.. No contacts here!' : filteredContacts.length} {filteredContacts.length > 1 ? 'Contact(s)' : <></>}</strong>
+				<S.HeaderList hasError={hasError}>
+          {!hasError && (<strong>
+            {filteredContacts.length === 0 ? 'Ops.. No contacts here!' : filteredContacts.length}
+            {filteredContacts.length > 1 ? 'Contact(s)' : <></>}
+          </strong>)}
 					<a href="/new">New Contact</a>
-				</S.HeaderList>
+        </S.HeaderList>
 
-				{filteredContacts.length > 0 && <S.OrderByName orderBy={orderBy}>
-					<button type="button" className="sort-button" onClick={handleSortContacts}>
-						<span>Nome</span>
-						<img src={arrow} alt="arrow" />
-					</button>
-				</S.OrderByName>}
+        {hasError && (
+          <S.ErrorContainer>
+            <img src={sad} alt='sad'/>
+            <div className='details'>
+              <strong>Ocorreu um erro ao obter seus contatos!</strong>
+              <Button type='button' onClick={handleTryAgain}>Tentar novamente</Button>
+            </div>
+          </S.ErrorContainer>
+        )}
 
-				{filteredContacts.map((contact) => (
-					<S.Card key={contact.id}>
-						<div className="info">
-							<div className="contact-name">
-								<strong>{contact.name}</strong>
-								{contact.category_name && <small>{contact.category_name}</small>}
-							</div>
-							<span>{contact.email}</span>
-							<span>{contact.phone}</span>
-						</div>
-						<div className="actions">
-							<a href={`/edit/${contact.id}`}>
-								<img src={edit} alt="edit" />
-							</a>
-							<button type="button">
-								<img src={trash} alt="trash" />
-							</button>
-						</div>
-					</S.Card>
-				))}
+        {!hasError&&
+          <>{
+            filteredContacts.length > 0 && <S.OrderByName orderBy={orderBy}>
+                <button type="button" className="sort-button" onClick={handleSortContacts}>
+                  <span>Nome</span>
+                  <img src={arrow} alt="arrow" />
+                </button>
+              </S.OrderByName>
+            }
+
+            {
+              filteredContacts.map((contact) => (
+                <S.Card key={contact.id}>
+                  <div className="info">
+                    <div className="contact-name">
+                      <strong>{contact.name}</strong>
+                      {contact.category_name && <small>{contact.category_name}</small>}
+                    </div>
+                    <span>{contact.email}</span>
+                    <span>{contact.phone}</span>
+                  </div>
+                  <div className="actions">
+                    <a href={`/edit/${contact.id}`}>
+                      <img src={edit} alt="edit" />
+                    </a>
+                    <button type="button">
+                      <img src={trash} alt="trash" />
+                    </button>
+                  </div>
+                </S.Card>
+              ))
+            }
+          </>
+        }
 
 			</S.ContainerList>
 		</>
