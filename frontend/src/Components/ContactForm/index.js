@@ -1,23 +1,38 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../Components/Button';
 import Input from '../../Components/Input';
 import Select from '../../Components/Select';
 import { useErrors } from '../../hooks/useErrors';
+import CategoriesService from '../../services/CategoriesService';
 import formatPhone from '../../utils/fomatPhone';
 import isEmailValid from '../../utils/isEmailValid';
 import FormGroup from '../FormGroup';
 import * as S from './styled';
 
-export default function ContactForm({ buttonLabel }) {
-	//declarating controlled components
+export default function ContactForm({ buttonLabel, onSubmit }) {
+	//declaring controlled components
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
-	const [category, setCategory] = useState('');
+	const [categoryId, setCategoryId] = useState('');
+	const [categories, setCategories] = useState([]);
+	const [isLoadingcategories, setIsLoadingCategories] = useState(true);
 	const { setError, removeError, getErrorMessageByFieldName, errors } = useErrors();
 
-	const isFormValid = (name && errors.length === 0)
+  const isFormValid = (name && errors.length === 0)
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categoriesList = await CategoriesService.listCategories()
+        console.log(categoriesList)
+        setCategories(categoriesList)
+      } catch { } finally {
+        setIsLoadingCategories(false)
+      }
+    }
+    loadCategories()
+  }, [])
 
 	const handleNameChange = (e) => {
 		setName(e.target.value);
@@ -39,14 +54,16 @@ export default function ContactForm({ buttonLabel }) {
 
 	const handlePhoneChange = (e) => {
 		setPhone(formatPhone(e.target.value));
-	}
+  }
+
 	const handleCategoryChange = (e) => {
-		setCategory(e.target.value)
+		setCategoryId(e.target.value)
 	}
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log({ name, email, phone: phone.replace(/\D/g, '') });
+    // console.log({ name, email, phone: phone.replace(/\D/g, ''), categoryId });
+    onSubmit({ name, email, phone, categoryId })
 	};
 
 	return (
@@ -76,12 +93,22 @@ export default function ContactForm({ buttonLabel }) {
 				<Input value={phone} type="text" placeholder="Phone" onChange={handlePhoneChange} />
 			</FormGroup>
 
-			<FormGroup>
-				<Select defaultValue='0' onChange={handleCategoryChange} value={category} placeholder="Categoria">
-					<option value="0" disabled selected>
-						Category
+			<FormGroup isLoading={isLoadingcategories}>
+        <Select
+          onChange={handleCategoryChange}
+          value={categoryId}
+          placeholder="Categoria"
+          disabled={isLoadingcategories}
+        >
+					<option selected>
+						No Category
+          </option>
+          {categories.map((item) => (
+          <option key={item.id} value={item.id}>
+						{item.name}
 					</option>
-					<option value="1">Instagram</option>
+
+          ))}
 				</Select>
 			</FormGroup>
 			<S.ButtonContainer>
@@ -92,5 +119,6 @@ export default function ContactForm({ buttonLabel }) {
 }
 
 ContactForm.propTypes = {
-	buttonLabel: PropTypes.string.isRequired,
+  buttonLabel: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired
 };

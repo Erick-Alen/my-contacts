@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const Container = styled.div`
 	& + & {
@@ -6,8 +6,17 @@ export const Container = styled.div`
 	}
 	small {
 		display: block;
-		margin-top: 8px;
+		margin-top: 8px;contact
 		font-size: 12px;
 		color: ${({ theme }) => theme.colors.danger.main};
 	}
+
+  .form-item{
+    position: relative;
+    .loader{
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
+  }
 `;

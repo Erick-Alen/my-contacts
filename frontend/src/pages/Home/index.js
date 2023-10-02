@@ -1,12 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Button from '../../Components/Button';
 import Loader from '../../Components/Loader';
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
 import sad from '../../assets/images/sad.svg';
+import emptyBox from '../../assets/images/empty-box.svg';
+import magnifierQuestion from '../../assets/images/magnifier-question.svg';
 import * as S from '../../pages/Home/styled';
 import ContactsService from '../../services/ContactsService';
+
 
 export default function Home() {
 	const [contacts, setContacts] = useState([])
@@ -19,10 +22,11 @@ export default function Home() {
 		contact.name.toLowerCase().includes(searchTerm.toLowerCase())
 	)), [contacts, searchTerm])
 
-  const loadContacts = async () => {
+  const loadContacts = useCallback( async () => {
     setIsLoading(true)
     try {
       const contactsList = await ContactsService.listContacts(orderBy)
+      // const contactsList = []
       setContacts(contactsList)
       setHasError(false)
     } catch (err) {
@@ -34,11 +38,11 @@ export default function Home() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [orderBy])
 
 	useEffect(() => {
     loadContacts();
-	}, [orderBy])
+	}, [loadContacts])
 
 	const handleSortContacts = () => {
 		setOrderBy((prev) => (prev === 'asc' ? 'desc' : 'asc'))
@@ -68,15 +72,21 @@ export default function Home() {
 		<>
 			{/* <Modal danger /> */}
 			<Loader isLoading={isLoading} />
-			<S.InputSearchContainer>
+			{contacts.length > 0 && (
+      <S.InputSearchContainer>
 				<input value={searchTerm} onChange={onSearchTerm} placeholder="Search contact's name" type="text" />
 			</S.InputSearchContainer>
+      )}
 
 			<S.ContainerList>
-				<S.HeaderList hasError={hasError}>
-          {!hasError && (<strong>
+        <S.HeaderList justifyContent={
+          hasError ? 'flex-end'
+            : contacts.length > 0 ? 'space-between'
+              : 'center'
+        }>
+          {(!hasError && contacts.length > 0) && (<strong>
             {filteredContacts.length === 0 ? 'Ops.. No contacts here!' : filteredContacts.length}
-            {filteredContacts.length > 1 ? 'Contact(s)' : <></>}
+            {filteredContacts.length > 1 ? ' Contact(s)' : <></>}
           </strong>)}
 					<a href="/new">New Contact</a>
         </S.HeaderList>
@@ -91,8 +101,29 @@ export default function Home() {
           </S.ErrorContainer>
         )}
 
-        {!hasError&&
-          <>{
+        {!hasError && (
+          <>
+          {
+            (contacts.length < 1 && !isLoading) && (
+              <S.EmptyListContainer>
+                <img src={emptyBox} alt='empty box' />
+                <div>
+                    <p>Você ainda não tem nenhum contato cadastrado! Clique no botão <strong>”Novo contato”</strong> acima para cadastrar o seu primeiro!</p>
+                </div>
+              </S.EmptyListContainer>
+            )
+          }
+          {
+            (contacts.length > 0 && filteredContacts.length < 1 && !isLoading) && (
+              <S.SearchNotFoundContainer>
+                <img src={magnifierQuestion} alt='magnifier question' />
+                <div>
+                    <p>Nenhum resultado foi encontrado para <strong>{searchTerm}</strong>.</p>
+                </div>
+              </S.SearchNotFoundContainer>
+            )
+          }
+          {
             filteredContacts.length > 0 && <S.OrderByName orderBy={orderBy}>
                 <button type="button" className="sort-button" onClick={handleSortContacts}>
                   <span>Nome</span>
@@ -124,7 +155,7 @@ export default function Home() {
               ))
             }
           </>
-        }
+        )}
 
 			</S.ContainerList>
 		</>
