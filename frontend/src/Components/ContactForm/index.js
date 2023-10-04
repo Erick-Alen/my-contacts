@@ -8,6 +8,7 @@ import CategoriesService from '../../services/CategoriesService';
 import formatPhone from '../../utils/fomatPhone';
 import isEmailValid from '../../utils/isEmailValid';
 import FormGroup from '../FormGroup';
+import Spinner from '../Spinner';
 import * as S from './styled';
 
 export default function ContactForm({ buttonLabel, onSubmit }) {
@@ -18,6 +19,7 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 	const [categoryId, setCategoryId] = useState('');
 	const [categories, setCategories] = useState([]);
 	const [isLoadingcategories, setIsLoadingCategories] = useState(true);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { setError, removeError, getErrorMessageByFieldName, errors } = useErrors();
 
   const isFormValid = (name && errors.length === 0)
@@ -25,7 +27,6 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
     const loadCategories = async () => {
       try {
         const categoriesList = await CategoriesService.listCategories()
-        console.log(categoriesList)
         setCategories(categoriesList)
       } catch { } finally {
         setIsLoadingCategories(false)
@@ -60,10 +61,14 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 		setCategoryId(e.target.value)
 	}
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async(e) => {
 		e.preventDefault();
+    setIsSubmitting(true)
     // console.log({ name, email, phone: phone.replace(/\D/g, ''), categoryId });
-    onSubmit({ name, email, phone, categoryId })
+    await onSubmit({ name, email, phone, categoryId })
+
+    setIsSubmitting(false)
+
 	};
 
 	return (
@@ -75,7 +80,8 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 					autoFocus
 					type="text"
 					placeholder="Name*"
-					onChange={handleNameChange}
+          onChange={handleNameChange}
+          disabled={isSubmitting}
 				/>
 			</FormGroup>
 
@@ -85,12 +91,19 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 					error={getErrorMessageByFieldName('email')}
 					value={email}
 					placeholder="E-mail"
-					onChange={handleEmailChange}
+          onChange={handleEmailChange}
+          disabled={isSubmitting}
 				/>
 			</FormGroup>
 
 			<FormGroup>
-				<Input value={phone} type="text" placeholder="Phone" onChange={handlePhoneChange} />
+				<Input
+          value={phone}
+          type="text"
+          placeholder="Phone"
+          onChange={handlePhoneChange}
+          disabled={isSubmitting}
+        />
 			</FormGroup>
 
 			<FormGroup isLoading={isLoadingcategories}>
@@ -98,7 +111,7 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
           onChange={handleCategoryChange}
           value={categoryId}
           placeholder="Categoria"
-          disabled={isLoadingcategories}
+          disabled={isLoadingcategories || isSubmitting}
         >
 					<option selected>
 						No Category
@@ -112,7 +125,10 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 				</Select>
 			</FormGroup>
 			<S.ButtonContainer>
-				<Button type="submit" disabled={!isFormValid}>{buttonLabel}</Button>
+        <Button type="submit" disabled={!isFormValid}>
+          {!isSubmitting && buttonLabel}
+          {isSubmitting && <Spinner size={16}/>}
+        </Button>
 			</S.ButtonContainer>
 		</S.Form>
 	);

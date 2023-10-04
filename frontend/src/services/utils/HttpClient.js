@@ -39,7 +39,7 @@ class HttpClient  {
     await delay(500);
     const response = await fetch(`${this.baseURL}${path}`, {
       method: options.method,
-      options: JSON.stringify(options.body),
+      body: JSON.stringify(options.body),
       headers,
     });
 
@@ -50,7 +50,7 @@ class HttpClient  {
       body = await response.json();
     }
 
-    if (!response.ok) {
+    if (!response.ok) {console.log('api error')
       throw new APIError(body,
         response,
       );

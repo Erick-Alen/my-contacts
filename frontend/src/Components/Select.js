@@ -16,6 +16,7 @@ export default styled.select`
     background-color: ${({ theme }) => theme.colors.gray[100]};
     border-color: ${({ theme }) => theme.colors.gray[200]};
     transition: all 0.5s ease-in-out;
+    opacity: 1;
   }
 	&:focus {
 		border-color: ${({ theme }) => theme.colors.primary.main};

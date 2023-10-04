@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import React from 'react'
 export default function Spinner({ size }) {
-  console.log('size',size)
   return (
     <StyledSpinner size={size} />
   )
