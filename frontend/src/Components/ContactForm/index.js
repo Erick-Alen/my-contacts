@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState, useImperativeHandle } from 'react';
 import Button from '../../Components/Button';
 import Input from '../../Components/Input';
 import Select from '../../Components/Select';
@@ -11,8 +11,8 @@ import FormGroup from '../FormGroup';
 import Spinner from '../Spinner';
 import * as S from './styled';
 
-export default function ContactForm({ buttonLabel, onSubmit }) {
-	//declaring controlled components
+const ContactForm = forwardRef(({buttonLabel, onSubmit }, ref) => {
+  //declaring controlled components
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
@@ -20,7 +20,19 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 	const [categories, setCategories] = useState([]);
 	const [isLoadingcategories, setIsLoadingCategories] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const { setError, removeError, getErrorMessageByFieldName, errors } = useErrors();
+  const { setError, removeError, getErrorMessageByFieldName, errors } = useErrors();
+
+  useEffect(() => {
+    const refObject = ref;
+    refObject.current = {
+      setFieldsValues: (contact) => {
+        setName(contact.name)
+        setEmail(contact.email)
+        setPhone(contact.phone)
+        setCategoryId(contact.category_id)
+      }
+    }
+  }, [])
 
   const isFormValid = (name && errors.length === 0)
   useEffect(() => {
@@ -65,7 +77,12 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 		e.preventDefault();
     setIsSubmitting(true)
     // console.log({ name, email, phone: phone.replace(/\D/g, ''), categoryId });
-    await onSubmit({ name, email, phone, categoryId })
+    await onSubmit({ name, email, phone, categoryId });
+
+    setName('');
+    setEmail('');
+    setPhone('');
+    setCategoryId('');
 
     setIsSubmitting(false)
 
@@ -125,16 +142,19 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 				</Select>
 			</FormGroup>
 			<S.ButtonContainer>
-        <Button type="submit" disabled={!isFormValid}>
+        <Button type="submit" disabled={!isFormValid | isSubmitting}>
           {!isSubmitting && buttonLabel}
           {isSubmitting && <Spinner size={16}/>}
         </Button>
 			</S.ButtonContainer>
 		</S.Form>
 	);
-}
+})
+
 
 ContactForm.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
+
+export default ContactForm;

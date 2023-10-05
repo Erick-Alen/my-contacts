@@ -17,7 +17,7 @@ const containerVariants = {
 }
 
 export const Container = styled.div`
-  ${({type})=> containerVariants[type]}
+  ${({type})=> containerVariants[type] || containerVariants.default}
   padding: 16px 32px;
   color: #fff;
   border-radius: 4px;
@@ -30,7 +30,7 @@ export const Container = styled.div`
   & + & {
     margin-top: 12px;
   }
-  
+
   img {
     margin-right: 4px;
   }
