@@ -6,16 +6,17 @@ import _default from '../../assets/styles/themes/default';
 import Routes from '../../routes';
 import Header from '../Header';
 import * as S from './styled';
+import ToastContainer from '../Toast/ToastContainer';
 
 function App() {
 	return (
 		<BrowserRouter>
 			<ThemeProvider theme={_default}>
-				<GlobalStyles />
+        <GlobalStyles />
+        <ToastContainer/>
 				<S.Container>
 					<Header />
 					<Routes />
-					{/* <ContactsList/> */}
 				</S.Container>
 			</ThemeProvider>
 		</BrowserRouter>
