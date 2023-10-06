@@ -21,6 +21,14 @@ class HttpClient  {
       })
   }
 
+  put(path, options) {
+    return this.makeRequest(path, {
+      method: 'PUT',
+      body: options?.body,
+      headers: options?.headers,
+      })
+  }
+
   makeRequest = async (path, options) => {
     const headers = new Headers();
     if (options.body) {
@@ -50,10 +58,8 @@ class HttpClient  {
       body = await response.json();
     }
 
-    if (!response.ok) {console.log('api error')
-      throw new APIError(body,
-        response,
-      );
+    if (!response.ok) {
+      throw new APIError(body, response);
     }
     return body;
   }

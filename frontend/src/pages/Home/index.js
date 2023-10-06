@@ -64,7 +64,6 @@ export default function Home() {
   }
 
   const handleTryAgain = () => {
-    console.log('handleTryAgain')
     loadContacts();
   }
 

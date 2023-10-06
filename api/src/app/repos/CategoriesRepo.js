@@ -19,7 +19,7 @@ class CategoriesRepo {
 		const [row] = await db.query('SELECT * FROM contacts WHERE id = $1', [id]);
 		return row;
 	}
-	
+
 	async update(id, { name, phone, email, category_id }) {
 		const [row] = await db.query(`
 			UPDATE contacts

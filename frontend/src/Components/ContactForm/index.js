@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { forwardRef, useEffect, useState, useImperativeHandle } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import Button from '../../Components/Button';
 import Input from '../../Components/Input';
 import Select from '../../Components/Select';
@@ -7,11 +7,12 @@ import { useErrors } from '../../hooks/useErrors';
 import CategoriesService from '../../services/CategoriesService';
 import formatPhone from '../../utils/fomatPhone';
 import isEmailValid from '../../utils/isEmailValid';
+import toast from '../../utils/toast';
 import FormGroup from '../FormGroup';
 import Spinner from '../Spinner';
 import * as S from './styled';
-
-const ContactForm = forwardRef(({buttonLabel, onSubmit }, ref) => {
+/* eslint-disable react/display-name */
+const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   //declaring controlled components
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
@@ -22,17 +23,20 @@ const ContactForm = forwardRef(({buttonLabel, onSubmit }, ref) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
   const { setError, removeError, getErrorMessageByFieldName, errors } = useErrors();
 
-  useEffect(() => {
-    const refObject = ref;
-    refObject.current = {
-      setFieldsValues: (contact) => {
-        setName(contact.name)
-        setEmail(contact.email)
-        setPhone(contact.phone)
-        setCategoryId(contact.category_id)
-      }
+  useImperativeHandle(ref, () => ({
+    setFieldsValues: (contact) => {
+      setName(contact.name ?? '');
+      setEmail(contact.email ?? '');
+      setPhone(formatPhone(contact.phone ?? ''));
+      setCategoryId(contact.category_id ?? '');
+    },
+    resetFields: () => {
+      setName('');
+      setEmail('');
+      setPhone('');
+      setCategoryId('');
     }
-  }, [])
+  }), [])
 
   const isFormValid = (name && errors.length === 0)
   useEffect(() => {
@@ -79,10 +83,10 @@ const ContactForm = forwardRef(({buttonLabel, onSubmit }, ref) => {
     // console.log({ name, email, phone: phone.replace(/\D/g, ''), categoryId });
     await onSubmit({ name, email, phone, categoryId });
 
-    setName('');
-    setEmail('');
-    setPhone('');
-    setCategoryId('');
+    // setName('');
+    // setEmail('');
+    // setPhone('');
+    // setCategoryId('');
 
     setIsSubmitting(false)
 

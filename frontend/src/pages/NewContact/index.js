@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ContactForm from '../../Components/ContactForm';
 import FormHeader from '../../Components/FormHeader';
 import ContactsService from '../../services/ContactsService';
 import toast from '../../utils/toast';
 
 export default function NewContact() {
+  const contactFormRef = useRef(null)
   const handleSubmit = async(formData) => {
     //  console.log('handleSubmit do newContact', formData)
     try {
@@ -14,10 +15,10 @@ export default function NewContact() {
          phone: formData.phone,
          category_id: formData.categoryId,
        }
-       const response = await ContactsService.createContact(contact)
-        console.log(response)
+      await ContactsService.createContact(contact)
+      contactFormRef.current.resetFields()
         toast({
-          type: 'Success',
+          type: 'success',
           text: 'Contact created succesfully',
           duration: 3000,
         })
@@ -35,7 +36,7 @@ export default function NewContact() {
 	return (
 		<>
 			<FormHeader title="New Contact" />
-			<ContactForm buttonLabel="Register" onSubmit={handleSubmit} />
+			<ContactForm ref={contactFormRef} buttonLabel="Register" onSubmit={handleSubmit} />
 		</>
 	);
 }

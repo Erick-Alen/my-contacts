@@ -57,11 +57,12 @@ class ContactController {
 		if (!isValidUUID(id)) {
 			return res.status(400).json({ error: "Invalid contact ID" })
 		}
+
+		const { name, phone, email, category_id } = req.body;
 		if (category_id && !isValidUUID(category_id)) {
 			return res.status(400).json({ error: "Invalid category" })
 		}
 
-		const { name, phone, email, category_id } = req.body;
 		if (!name) {
 			return res.status(400).json({ error: "Name required" })
 		}
