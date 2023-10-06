@@ -27,10 +27,10 @@ export const Container = styled.div`
 		color: ${({ theme, danger }) =>
 		danger ? theme.colors.danger.main : theme.colors.gray[900]};
 	}
+  .modal-body{
+    margin-top: 32px;
+  }
 
-	p {
-		margin-top: 8px;
-	}
 `;
 
 export const Footer = styled.footer`
@@ -39,15 +39,27 @@ export const Footer = styled.footer`
 	justify-content: end;
 	margin-top: 32px;
 
+
 	.cancel-button {
-		background: transparent;
-		border: none;
-		font-size: 16px;
-		margin-right: 8px;
-		color: ${({ theme }) => theme.colors.gray[200]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+	padding: 0 16px;
+	height: 52px;
+	box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.04);
+  margin-right: 16px;
+	border: none;
+	border-radius: 4px;
+	background: #fff;
+  color: ${({ theme }) => theme.colors.primary.main};
+	font-size: 16px;
+	font-weight: bold;
+	transition: background 0.1s ease-in-out;
+
+
 		&:hover {
-			background: ${({ theme }) => theme.colors.primary.lighter};
-			color: ${({ theme }) => theme.colors.primary.dark};
+			background: ${({ theme }) => theme.colors.primary.main};
+			color: #fff;
 		}
 	}
 `;

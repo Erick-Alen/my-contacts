@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import Modal from '../../Components/Modal';
 import Button from '../../Components/Button';
-import Loader from '../../Components/Loader';
+import emptyBox from '../../assets/images/empty-box.svg';
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
-import sad from '../../assets/images/sad.svg';
-import emptyBox from '../../assets/images/empty-box.svg';
 import magnifierQuestion from '../../assets/images/magnifier-question.svg';
+import sad from '../../assets/images/sad.svg';
 import * as S from '../../pages/Home/styled';
 import ContactsService from '../../services/ContactsService';
 
@@ -46,17 +46,6 @@ export default function Home() {
 
 	const handleSortContacts = () => {
 		setOrderBy((prev) => (prev === 'asc' ? 'desc' : 'asc'))
-	//	making another fetch here
-	// 	const newOrder = orderBy === 'asc' ? 'desc' : 'asc';
-	// 	setOrderBy(newOrder);
-	// 	fetch(`http://localhost:8000/contacts?orderBy=${newOrder}`)
-	// 	.then(async (res) => {
-	// 		const data = await res.json()
-	// 		setContacts(data)
-	// 	})
-	// 	.catch((err)=>{
-	// 		console.log(err)
-	// 	})
 	}
 
 	const onSearchTerm = (e) => {
@@ -69,8 +58,13 @@ export default function Home() {
 
 	return (
 		<>
-			{/* <Modal danger /> */}
-			<Loader isLoading={isLoading} />
+      {/* <Loader isLoading={isLoading} /> */}
+      <Modal
+        danger
+        confirm='Delete'
+        onCancel={() => console.log('onCancel')}
+        onConfirm={() => console.log('onConfirm')}
+      ></Modal>
 			{contacts.length > 0 && (
       <S.InputSearchContainer>
 				<input value={searchTerm} onChange={onSearchTerm} placeholder="Search contact's name" type="text" />
