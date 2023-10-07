@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import ToastMessage from '../ToastMessage'
 import * as S from './styled'
-import { toastEventManager } from '../../../utils/toast'
+import { toastEventManager } from '../../../utils/notification'
 
 export default function ToastContainer() {
   const [messages,setMessages] = useState([

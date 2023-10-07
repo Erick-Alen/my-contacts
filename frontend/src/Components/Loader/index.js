@@ -1,19 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import * as S from './styled';
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import Spinner from '../Spinner';
+import * as S from './styled';
+import ReactPortal from '../ReactPortal';
 
 export default function Loader({ isLoading }) {
 	if (!isLoading) {
 		return null;
 	}
-	return ReactDOM.createPortal(
-    <S.Overlay>
-      <Spinner size={90}/>
-		</S.Overlay>,
-		document.getElementById('loader-root'),
-	);
+	
+	return (
+		<ReactPortal>
+			<S.Overlay>
+				<Spinner size={90} />
+			</S.Overlay>,
+		</ReactPortal>
+	)
 }
 Loader.propTypes = {
 	isLoading: PropTypes.bool.isRequired

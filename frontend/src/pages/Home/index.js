@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import Modal from '../../Components/Modal';
 import Button from '../../Components/Button';
+import Modal from '../../Components/Modal';
 import emptyBox from '../../assets/images/empty-box.svg';
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
@@ -9,6 +9,8 @@ import magnifierQuestion from '../../assets/images/magnifier-question.svg';
 import sad from '../../assets/images/sad.svg';
 import * as S from '../../pages/Home/styled';
 import ContactsService from '../../services/ContactsService';
+import notification from '../../utils/notification';
+import Loader from '../../Components/Loader';
 
 
 export default function Home() {
@@ -16,7 +18,10 @@ export default function Home() {
 	const [orderBy, setOrderBy] = useState('asc')
 	const [searchTerm, setSearchTerm] = useState('')
 	const [isLoading, setIsLoading] = useState(true)
+	const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
+	const [isLoadingDelete, setIsLoadingDelete] = useState(false)
 	const [hasError, setHasError] = useState(false)
+	const [contactToBeDeleted, setContactToBeDeleted] = useState(null)
 
 	const filteredContacts = useMemo(() => contacts.filter((contact) => (
 		contact.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -26,7 +31,6 @@ export default function Home() {
     setIsLoading(true)
     try {
       const contactsList = await ContactsService.listContacts(orderBy)
-      // const contactsList = []
       setContacts(contactsList)
       setHasError(false)
     } catch (err) {
@@ -54,17 +58,53 @@ export default function Home() {
 
   const handleTryAgain = () => {
     loadContacts();
-  }
-
+	}
+	const handleDeleteContact = (contact) => {
+		setContactToBeDeleted(contact)
+		setIsDeleteModalVisible(true)
+	}
+	const handleCloseDeleteModal = () => {
+		setIsDeleteModalVisible(false)
+		setContactToBeDeleted(null)
+	}
+	const handleConfirmDeleteContact = async () => {
+		setIsLoadingDelete(true)
+		try {
+			await ContactsService.deleteContact(contactToBeDeleted.id)
+			notification({
+				type: 'success',
+				text: 'Contact deleted succesfully',
+				duration: 3000,
+			})
+			handleCloseDeleteModal()
+			setContacts((prev) => prev.filter(
+				(contact) => contact.id !== contactToBeDeleted.id)
+			)
+		} catch {
+			notification({
+        type: 'danger',
+        text: 'An error ocurred while deleting the contact',
+        duration: 3000,
+      })
+		} finally {
+			setIsLoadingDelete(false)
+		}
+	}
 	return (
 		<>
-      {/* <Loader isLoading={isLoading} /> */}
+      <Loader isLoading={isLoading} />
       <Modal
-        danger
-        confirm='Delete'
-        onCancel={() => console.log('onCancel')}
-        onConfirm={() => console.log('onConfirm')}
-      ></Modal>
+				danger
+				title={`Do you want to delete the contact ${contactToBeDeleted?.name} ?`}
+				confirm='Delete'
+				isLoading={isLoadingDelete}
+        visible={isDeleteModalVisible}
+        onCancel={handleCloseDeleteModal}
+        onConfirm={handleConfirmDeleteContact}
+      >
+        <p>This action cannot be undone</p>
+      </Modal>
+
 			{contacts.length > 0 && (
       <S.InputSearchContainer>
 				<input value={searchTerm} onChange={onSearchTerm} placeholder="Search contact's name" type="text" />
@@ -140,7 +180,7 @@ export default function Home() {
                     <a href={`/edit/${contact.id}`}>
                       <img src={edit} alt="edit" />
                     </a>
-                    <button type="button">
+                    <button onClick={()=>handleDeleteContact(contact)} type="button">
                       <img src={trash} alt="trash" />
                     </button>
                   </div>

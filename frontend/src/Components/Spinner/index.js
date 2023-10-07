@@ -12,6 +12,7 @@ Spinner.propTypes = {
   size: PropTypes.number,
   light: PropTypes.bool,
 };
+
 Spinner.defaultProps = {
   size: 32,
 };

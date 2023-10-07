@@ -21,7 +21,7 @@ export const StyledButton =  styled.button`
 		background: ${({ theme }) => theme.colors.primary.dark};
 	}
 	&[disabled] {
-		background: #ccc;
+		background: #ccc !important;
 		cursor: default;
 	}
 

@@ -1,38 +1,60 @@
-import React, { useRef, useState, useEffect} from 'react';
-import ContactsService from '../../services/ContactsService';
-import Loader from '../../Components/Loader';
-import toast from '../../utils/toast'
-import { useHistory } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ContactForm from '../../Components/ContactForm';
 import FormHeader from '../../Components/FormHeader';
+import Loader from '../../Components/Loader';
+import useIsMounted from '../../hooks/useIsMounted';
+import ContactsService from '../../services/ContactsService';
+import notification from '../../utils/notification';
+import useSafeAsyncAction from '../../hooks/useSafeAsyncAction';
 
 export default function EditContact() {
   const [isLoading, setIsLoading] = useState(true)
   const [contactName, setContactName] = useState('')
   const contactFormRef = useRef(null)
 
-  const history = useHistory()
-  const { id } = useParams()
-
+	const { id } = useParams()
+	const safeAsyncAction = useSafeAsyncAction()
+	// const isMounted = useIsMounted()
   useEffect(() => {
+
     const loadContact = async () => {
       try {
-        const contact = await ContactsService.getContactById(id)
-        setContactName(contact.name)
-        contactFormRef.current.setFieldsValues(contact)
-        console.log(contactFormRef.current)
-        setIsLoading(false)
-      } catch {
-        history.push('/')
-        toast({
-          type: 'danger',
-          text: 'Contact not found'
-        })
+				const contact = await ContactsService.getContactById(id)
+				// if (isMounted()) {
+				// 	setContactName(contact.name)
+				// 	contactFormRef.current.setFieldsValues(contact)
+				// 	setIsLoading(false)
+				// }
+				safeAsyncAction(()=> {
+					setContactName(contact.name)
+					contactFormRef.current.setFieldsValues(contact)
+					setIsLoading(false)
+				})
+
+			} catch {
+				// if (isMounted()) {
+				// 	window.location.href = '/';
+				// 	notification({
+				// 		type: 'danger',
+				// 		text: 'Contact not found'
+				// 	})
+				// }
+
+				safeAsyncAction(()=> {
+					window.location.href = '/';
+					notification({
+						type: 'danger',
+						text: 'Contact not found'
+					})
+				})
+
       }
     }
     loadContact();
-  }, [id, history])
+	}, [id, safeAsyncAction])
+
+
   const handleSubmit = async (formData) => {
     try {
       const contact = {
@@ -43,13 +65,13 @@ export default function EditContact() {
       }
       const response = await ContactsService.updateContact(id, contact)
       setContactName(response.name)
-      toast({
+      notification({
         type: 'success',
         text: 'Contact updated succesfully',
         duration: 3000,
       })
     } catch (e) {
-      toast({
+      notification({
         type: 'danger',
         text: 'An error ocurred while updating the contact',
         duration: 3000,

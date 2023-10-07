@@ -27,6 +27,13 @@ class HttpClient  {
       body: options?.body,
       headers: options?.headers,
       })
+	}
+
+  delete(path, options) {
+    return this.makeRequest(path, {
+      method: 'DELETE',
+      headers: options?.headers,
+      })
   }
 
   makeRequest = async (path, options) => {
@@ -44,7 +51,7 @@ class HttpClient  {
       });
     }
 
-    await delay(500);
+		await delay(500);
     const response = await fetch(`${this.baseURL}${path}`, {
       method: options.method,
       body: JSON.stringify(options.body),
@@ -54,7 +61,7 @@ class HttpClient  {
     const contentType = response.headers.get('content-type');
     let body = null;
 
-    if (contentType.includes('application/json')) {
+    if (contentType?.includes('application/json')) {
       body = await response.json();
     }
 

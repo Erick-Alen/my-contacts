@@ -7,7 +7,7 @@ import { useErrors } from '../../hooks/useErrors';
 import CategoriesService from '../../services/CategoriesService';
 import formatPhone from '../../utils/fomatPhone';
 import isEmailValid from '../../utils/isEmailValid';
-import toast from '../../utils/toast';
+import notification from '../../utils/notification';
 import FormGroup from '../FormGroup';
 import Spinner from '../Spinner';
 import * as S from './styled';
@@ -44,7 +44,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
       try {
         const categoriesList = await CategoriesService.listCategories()
         setCategories(categoriesList)
-      } catch { } finally {
+      } catch {} finally {
         setIsLoadingCategories(false)
       }
     }

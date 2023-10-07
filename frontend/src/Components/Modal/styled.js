@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 export const Overlay = styled.div`
 	background: rgba(0, 0, 0, 0.6);
 	backdrop-filter: blur(3.5px);
-	position: absolute;
+	position: fixed;
 	width: 100%;
 	height: 100%;
 	left: 0;
@@ -60,6 +60,10 @@ export const Footer = styled.footer`
 		&:hover {
 			background: ${({ theme }) => theme.colors.primary.main};
 			color: #fff;
+		}
+
+		&[disabled] {
+			cursor: not-allowed;
 		}
 	}
 `;

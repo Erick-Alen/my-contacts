@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import ContactForm from '../../Components/ContactForm';
 import FormHeader from '../../Components/FormHeader';
 import ContactsService from '../../services/ContactsService';
-import toast from '../../utils/toast';
+import notification from '../../utils/notification';
 
 export default function NewContact() {
   const contactFormRef = useRef(null)
@@ -17,7 +17,7 @@ export default function NewContact() {
        }
       await ContactsService.createContact(contact)
       contactFormRef.current.resetFields()
-        toast({
+        notification({
           type: 'success',
           text: 'Contact created succesfully',
           duration: 3000,
@@ -26,7 +26,7 @@ export default function NewContact() {
       //event: não envia informações de acordo com o evento
       //event: envia informações adicionais de acordo com o evento
       // usar o Custom event sem passar informações tem o mesmo efeito
-      toast({
+      notification({
         type: 'danger',
         text: 'An error ocurred while creating the contact',
         duration: 3000,
