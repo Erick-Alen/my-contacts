@@ -28,7 +28,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
       setName(contact.name ?? '');
       setEmail(contact.email ?? '');
       setPhone(formatPhone(contact.phone ?? ''));
-      setCategoryId(contact.category_id ?? '');
+      setCategoryId(contact.category.id ?? '');
     },
     resetFields: () => {
       setName('');
@@ -62,7 +62,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
 
 	const handleEmailChange = (e) => {
 		setEmail(e.target.value);
-		if (e.target.value && isEmailValid(e.target.value)) {
+		if (e.target.value && !isEmailValid(e.target.value)) {
 			setError({ field: 'email', message: 'Invalid e-mail' });
 		} else {
 			removeError('email');

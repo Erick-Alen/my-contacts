@@ -3,18 +3,13 @@ import ContactForm from '../../Components/ContactForm';
 import FormHeader from '../../Components/FormHeader';
 import ContactsService from '../../services/ContactsService';
 import notification from '../../utils/notification';
+import ContactMapper from '../../services/mappers/ContactMapper';
 
 export default function NewContact() {
   const contactFormRef = useRef(null)
-  const handleSubmit = async(formData) => {
+  const handleSubmit = async(contact) => {
     //  console.log('handleSubmit do newContact', formData)
     try {
-       const contact = {
-         name: formData.name,
-         email: formData.email,
-         phone: formData.phone,
-         category_id: formData.categoryId,
-       }
       await ContactsService.createContact(contact)
       contactFormRef.current.resetFields()
         notification({
