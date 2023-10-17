@@ -1,4 +1,4 @@
-import { keyframes, styled } from "styled-components";
+import { keyframes, styled } from 'styled-components';
 
 const load = keyframes`
   0% {

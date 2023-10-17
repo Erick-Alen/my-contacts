@@ -2,19 +2,19 @@ import styled, {css} from 'styled-components';
 
 const containerVariants = {
 
-  danger: css`
+	danger: css`
     background: ${({ theme }) => theme.colors.danger.dark};
   `,
 
-  default: css`
+	default: css`
     background: ${({ theme }) => theme.colors.primary.main};
   `,
 
-  success: css`
+	success: css`
     background: ${({ theme }) => theme.colors.success.main};
   `,
 
-}
+};
 
 export const Container = styled.div`
   ${({type})=> containerVariants[type] || containerVariants.default}

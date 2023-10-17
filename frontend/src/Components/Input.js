@@ -1,4 +1,4 @@
-import { css, styled } from "styled-components";
+import { css, styled } from 'styled-components';
 
 export default styled.input`
 	width: 100%;

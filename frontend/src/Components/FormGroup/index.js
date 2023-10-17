@@ -6,12 +6,12 @@ import Loader from '../Loader';
 
 export default function FormGroup({ children, error, isLoading }) {
 	return (
-    <S.Container>
-      {/* <Loader isLoading/> */}
-      <div className="form-item">
-        {children}
-        {isLoading && <div className='loader'><Spinner size={14} /></div>}
-      </div>
+		<S.Container>
+			<Loader isLoading={isLoading} />
+			<div className="form-item">
+				{children}
+				{isLoading && <div className='loader'><Spinner size={14} /></div>}
+			</div>
 
 			{error && <small>{error}</small>}
 		</S.Container>
@@ -20,8 +20,8 @@ export default function FormGroup({ children, error, isLoading }) {
 
 FormGroup.propTypes = {
 	children: PropTypes.node.isRequired,
-  error: PropTypes.string,
-  isLoading: PropTypes.bool,
+	error: PropTypes.string,
+	isLoading: PropTypes.bool,
 };
 
 FormGroup.defaultProps = {

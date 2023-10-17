@@ -53,14 +53,14 @@ Modal.propTypes = {
 	title: PropTypes.string.isRequired,
 	cancel: PropTypes.string.isRequired,
 	confirm: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
+	children: PropTypes.node.isRequired,
+	onCancel: PropTypes.func.isRequired,
+	onConfirm: PropTypes.func.isRequired,
 };
 
 Modal.defaultProps = {
 	danger: false,
 	isLoading: false,
-  cancel: 'Cancel',
+	cancel: 'Cancel',
 	confirm: 'Confirm',
 };
