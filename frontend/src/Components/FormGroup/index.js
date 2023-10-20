@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import * as S from './styled';
 import Spinner from '../Spinner';
-import Loader from '../Loader';
+import * as S from './styled';
 
 export default function FormGroup({ children, error, isLoading }) {
 	return (
