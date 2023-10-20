@@ -10,8 +10,8 @@ class CategoryMapper {
 	// }
 	toDomain(persistenceCategory) {
 		return {
-				id: persistenceCategory.id,
-				name: persistenceCategory.name
+			id: persistenceCategory.id,
+			name: persistenceCategory.name
 		};
 	}
 }

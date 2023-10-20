@@ -12,8 +12,8 @@ function App() {
 	return (
 		<BrowserRouter>
 			<ThemeProvider theme={_default}>
-        <GlobalStyles />
-        <ToastContainer/>
+				<GlobalStyles />
+				<ToastContainer/>
 				<S.Container>
 					<Header />
 					<Routes />

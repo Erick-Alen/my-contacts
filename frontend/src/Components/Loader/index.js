@@ -16,8 +16,8 @@ export default function Loader({ isLoading }) {
 				<Spinner size={90} />
 			</S.Overlay>,
 		</ReactPortal>
-	)
+	);
 }
 Loader.propTypes = {
 	isLoading: PropTypes.bool.isRequired
-}
+};

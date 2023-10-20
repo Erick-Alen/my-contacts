@@ -1,4 +1,4 @@
-import { css, styled } from "styled-components";
+import { css, styled } from 'styled-components';
 
 export const StyledButton =  styled.button`
   display: flex;
