@@ -24,7 +24,7 @@ const useHome = () => {
 			setHasError(false);
 		} catch (err) {
 			setHasError(true);
-			setContacts([])
+			setContacts([]);
 			console.log(err.name);
 			console.log(err.message);
 			console.log(err.response);
