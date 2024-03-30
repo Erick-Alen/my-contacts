@@ -38,8 +38,40 @@ Then, type the following command into the terminal:
 * `-d`: dettached mode, runs the docker container in background;
 * `-p`: define the ports that the database is being exposed for your computer.
 ```bash
-docker run -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -d postgres -p 5432:5432
+docker run --name pg -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -d postgres -p 5432:5432
 ```
+
+### Creating database with postgreSQL
+
+With your container running, type the following command to get into it:
+```bash
+docker exec -it pg bash
+```
+
+To log into the postgres, type the command `psql -U` passing your username:
+
+```bash
+psql -U root
+```
+
+#### Tags:
+* `\l`: list the database into the postgres database;
+* `dt`: list all tables from this database;
+* `\c`: connects with the selected database.
+
+After this, let's create the database with SQL commands:
+
+```sql
+CREATE DATABASE mycontacts
+```
+```bash
+\c mycontacts
+```
+```sql
+CREATE DATABASE mycontacts
+```
+To generate the UUIDs, will be necessary to install the extension `uuid-ossp`
+Then, type the commands in the file located inside `api/src/database/schema.sql`.
 
 To execute the frontend and API, open two separate terminals, get into `api`  and `frontend` folders in each one of them and execute the following commands:
 
