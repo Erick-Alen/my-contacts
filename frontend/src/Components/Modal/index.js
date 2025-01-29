@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from '../Button';
-import * as S from './styled';
 import ReactPortal from '../ReactPortal';
+import * as S from './styled';
 
 export default function Modal({
 	cancel,
@@ -15,7 +14,35 @@ export default function Modal({
 	onCancel,
 	onConfirm
 }) {
-	if (!visible) {
+
+	const [shouldrender, setShouldRender] = useState(visible);
+
+	const overlayref = useRef(null);
+
+	useEffect(() => {
+		if (visible) {
+			setShouldRender(true);
+		}
+
+		const handleAnimationEnd = () => {
+			setShouldRender(false);
+		}
+
+		if (!visible && overlayref.current) {
+			overlayref.current.addEventListener('animationend', () => {
+				setShouldRender(false);
+			});
+		}
+
+		return () => {
+			if (overlayref.current) {
+				overlayref.current.removeEventListener('animationend', handleAnimationEnd);
+			}
+		}
+
+	}, [visible])
+
+	if (!shouldrender) {
 		return null;
 	}
 
@@ -28,8 +55,8 @@ export default function Modal({
 
 	return (
 		<ReactPortal containerId={'modal-root'}>
-			<S.Overlay>
-				<S.Container danger={danger}>
+			<S.Overlay isLeaving={!visible}>
+				<S.Container danger={danger} isLeaving={!visible}>
 					<h1>{title}</h1>
 					<div className="modal-body">{children}</div>
 					<S.Footer>
@@ -46,17 +73,6 @@ export default function Modal({
 	);
 }
 
-Modal.propTypes = {
-	danger: PropTypes.bool,
-	isLoading: PropTypes.bool,
-	visible: PropTypes.bool.isRequired,
-	title: PropTypes.string.isRequired,
-	cancel: PropTypes.string.isRequired,
-	confirm: PropTypes.string.isRequired,
-	children: PropTypes.node.isRequired,
-	onCancel: PropTypes.func.isRequired,
-	onConfirm: PropTypes.func.isRequired,
-};
 
 Modal.defaultProps = {
 	danger: false,
