@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { styled, keyframes, css } from 'styled-components';
 
 const fadeIn = keyframes`
 	from {
@@ -7,7 +7,7 @@ const fadeIn = keyframes`
 	to {
 		opacity: 1
 	}
-`
+`;
 const scaleIn = keyframes`
 	from {
 		transform: scale(0);
@@ -15,7 +15,7 @@ const scaleIn = keyframes`
 	to {
 		transform: scale(1);
 	}
-	`
+	`;
 const fadeOut = keyframes`
 	from {
 		opacity: 1;
@@ -23,7 +23,7 @@ const fadeOut = keyframes`
 	to {
 		opacity: 0
 	}
-`
+`;
 const scaleOut = keyframes`
 	from {
 		transform: scale(0);
@@ -31,7 +31,7 @@ const scaleOut = keyframes`
 	to {
 		transform: scale(1);
 	}
-`
+`;
 
 export const Overlay = styled.div`
 	background: rgba(0, 0, 0, 0.6);

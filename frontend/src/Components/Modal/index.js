@@ -1,7 +1,9 @@
+import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import Button from '../Button';
 import ReactPortal from '../ReactPortal';
 import * as S from './styled';
+
 
 export default function Modal({
 	cancel,
@@ -26,7 +28,7 @@ export default function Modal({
 
 		const handleAnimationEnd = () => {
 			setShouldRender(false);
-		}
+		};
 
 		if (!visible && overlayref.current) {
 			overlayref.current.addEventListener('animationend', () => {
@@ -38,9 +40,9 @@ export default function Modal({
 			if (overlayref.current) {
 				overlayref.current.removeEventListener('animationend', handleAnimationEnd);
 			}
-		}
+		};
 
-	}, [visible])
+	}, [visible]);
 
 	if (!shouldrender) {
 		return null;
@@ -73,6 +75,19 @@ export default function Modal({
 	);
 }
 
+
+
+Modal.propTypes = {
+	cancel: PropTypes.string,
+	visible: PropTypes.bool.isRequired,
+	isLoading: PropTypes.bool,
+	confirm: PropTypes.string,
+	danger: PropTypes.bool,
+	title: PropTypes.string.isRequired,
+	children: PropTypes.node.isRequired,
+	onCancel: PropTypes.func.isRequired,
+	onConfirm: PropTypes.func.isRequired,
+};
 
 Modal.defaultProps = {
 	danger: false,
