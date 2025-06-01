@@ -25,7 +25,7 @@ export default function ToastContainer() {
 			toastEventManager.removeListener('addtoast', handleAddToast);
 		};
 	}, [setItems]);
-	
+
 	return (
 		<S.Container>
 			{renderList((message, { isLeaving, animatedRef } ) =>

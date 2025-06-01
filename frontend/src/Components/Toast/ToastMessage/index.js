@@ -1,11 +1,11 @@
 /* eslint-disable react/react-in-jsx-scope */
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import checkCircleIcon from '../../../assets/images/icons/check-circle.svg';
 import xCircleIcon from '../../../assets/images/icons/x-circle.svg';
 import * as S from './styled';
 
-export default function ToastMessage({ message, onRemoveMessage, isLeaving, animatedRef }) {
+function ToastMessage({ message, onRemoveMessage, isLeaving, animatedRef }) {
 	const { id, type, text, duration } = message;
 
 	useEffect(() => {
@@ -36,6 +36,8 @@ export default function ToastMessage({ message, onRemoveMessage, isLeaving, anim
 		</S.Container>
 	);
 }
+
+export default memo(ToastMessage);
 
 ToastMessage.propTypes = {
 	message: PropTypes.shape({
