@@ -11,8 +11,6 @@ export default function Loader({ isLoading }) {
 		// If not loading or not rendered, return null
 		return null;
 	}
-	console.log(isLoading);
-
 	return (
 		<ReactPortal>
 			<S.Overlay isLeaving={!isLoading} ref={animationRef}>
