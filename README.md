@@ -1,101 +1,48 @@
-# My Contacts - Your personal address book
+# My Contacts
 
-## About
+A personal address book built during the JStack course. The React interface lets you add, edit, search, sort, and delete contacts; an Express API persists contacts and categories in PostgreSQL. The interface also includes loading, empty, and error states.
 
-- [Preparing the environment](#install)
-- [Running app in localhost](#localhost)
+## Features
 
-## 🧐 About
+- Save a contact's name, email, phone number, and optional category.
+- Edit and delete contacts from the list.
+- Search and sort contacts.
+- Create and use categories to organize the address book.
 
-This project was made from the classes inside the [JStack](https://jstack.com.br/) course.
+## Stack
 
-The application was made to be used as a personal address book, keeping your contacts in memory.
+| Part | Technology |
+| --- | --- |
+| Interface | React, JavaScript, styled-components |
+| API | Node.js, Express, JavaScript, `pg` |
+| Database | PostgreSQL |
 
-Here, you can contacts and registering their phone numbers and some social media informations as well.
+The implementation uses **JavaScript**, not TypeScript. The previous README listed TypeScript in error.
 
-Main Technologies included in this repository:
+## Repository layout
 
-- [Typescript](https://www.typescriptlang.org/): JavaScript's superset with static typing, completely optional, but recommended.
+- `frontend/` — React application and UI.
+- `api/` — Express routes, controllers, and PostgreSQL queries.
+- `api/src/database/schema.sql` — database, extension, and table definitions.
 
-- [React](https://reactjs.org/): A library built with focus on building web interfaces from Javascript components.
+## Running locally
 
-- [Express](https://expressjs.com/): A minimal, flexible and unopinionated backend framework used to build RESTful APIs in the NodeJS environment.
+You need Node.js, Yarn, and PostgreSQL. The API currently uses fixed local database settings in `api/src/database/index.js`: host `localhost`, port `5432`, user `root`, password `root`, database `mycontacts`. These are development settings in the source, not environment-variable configuration. Change that file if your local database differs.
 
-## Installation <a name="install" />
-You'll need to install nodeJS to run this application. Node is a cross-platform, open-source JavaScript runtime environment that can run on Windows, Linux, Unix, macOS, and etc. You can download the latest version on the [Offical Site](https://nodejs.org/en/download). It'as recommended to download the latest version maked as `LTS (Long Term Support)`.
+Create the `mycontacts` database, connect to it, then execute the extension and table statements from `api/src/database/schema.sql`. The file itself contains a `CREATE DATABASE` statement, so run the remaining statements against the newly created database.
 
-After that, it will be required for you to have a database to keep al the data in memory. The easier way to make it is Using [Docker](https://docs.docker.com/get-docker/). Docker is a engine container that runs vrtual machines `(VMs)` from your computer kernel, making it easier to create and execute applications using containers. This assures you that the application running inside this isolated environment will not be affected by any version changes in your operational system, as well as making it easier to manage and scale these applications.
+Start the API from `api/`:
 
-## Running app in localhost <a name="localhost" />
-### Building Postgres database with Docker
-After installing docker, open your terminal and type the docker command to check if docker was installed effectivelly.
-
-Then, type the following command into the terminal:
-
-> Here i'm defining the user and password as root and the port 5432 as the standard of postgres database, just to execute into the localhost. You can change it but don't forget to update the credentials in the `DATABASE_URL` environment variable in the `.env` inside the `api` folder.
-#### Tags:
-* `-e`: environment variables;
-* `-d`: dettached mode, runs the docker container in background;
-* `-p`: define the ports that the database is being exposed for your computer.
-```bash
-docker run --name pg -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -d postgres -p 5432:5432
-```
-
-### Creating database with postgreSQL
-
-With your container running, type the following command to get into it:
-```bash
-docker exec -it pg bash
-```
-
-To log into the postgres, type the command `psql -U` passing your username:
-
-```bash
-psql -U root
-```
-
-#### Tags:
-* `\l`: list the database into the postgres database;
-* `dt`: list all tables from this database;
-* `\c`: connects with the selected database.
-
-After this, let's create the database with SQL commands:
-
-```sql
-CREATE DATABASE mycontacts
-```
-```bash
-\c mycontacts
-```
-```sql
-CREATE DATABASE mycontacts
-```
-To generate the UUIDs, will be necessary to install the extension `uuid-ossp`
-Then, type the commands in the file located inside `api/src/database/schema.sql`.
-
-To execute the frontend and API, open two separate terminals, get into `api`  and `frontend` folders in each one of them and execute the following commands:
-
-### Executing API on development mode
-```bash
-cd api
-```
-#### Installing the dependencies
 ```bash
 yarn
+yarn start
 ```
-#### Running in dev mode
-```bash
-yarn dev
-```
-### Executing Frontend on development mode
-```bash
-cd frontend
-```
-#### Installing the dependencies
+
+It listens on `http://localhost:8000`. In a second terminal, start the interface from `frontend/`:
+
 ```bash
 yarn
+yarn start
 ```
-#### Running in dev mode
-```bash
-yarn dev
-```
+
+The frontend start script uses Windows `set PORT=3000` syntax. On Linux or macOS, run `PORT=3000 yarn react-scripts start` instead. These setup instructions are based on the repository configuration; the complete local flow has not been rerun as part of this documentation change.
